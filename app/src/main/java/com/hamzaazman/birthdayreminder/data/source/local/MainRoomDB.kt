@@ -6,5 +6,5 @@ import com.hamzaazman.birthdayreminder.data.model.PersonEntity
 
 @Database(entities = [PersonEntity::class], version = 1, exportSchema = false)
 abstract class MainRoomDB : RoomDatabase() {
-    abstract fun mainDao():
+    abstract fun mainDao(): PersonDao
 }

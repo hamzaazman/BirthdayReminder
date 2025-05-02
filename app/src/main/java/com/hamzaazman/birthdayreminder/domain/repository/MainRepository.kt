@@ -1,3 +1,0 @@
-package com.hamzaazman.birthdayreminder.domain.repository
-
-interface MainRepository

@@ -21,7 +21,10 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel by viewModels<HomeViewModel>()
-    private val personAdapter by lazy {
+    private val todayAdapter by lazy {
+        PersonAdapter()
+    }
+    private val allAdapter by lazy {
         PersonAdapter()
     }
 
@@ -39,9 +42,10 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         with(binding) {
-            personsRecyclerView.adapter = personAdapter
+            todayRecyclerView.adapter = todayAdapter
+            allRecyclerView.adapter = allAdapter
 
-            addPersonFab.setOnClickListener {
+            fab.setOnClickListener {
                 val action = HomeFragmentDirections.actionHomeFragmentToAddPersonFragment()
                 findNavController().navigate(action)
             }
@@ -54,7 +58,12 @@ class HomeFragment : Fragment() {
     private fun collectState() {
         with(binding) {
             viewModel.uiState.collect(viewLifecycleOwner) { state ->
-                personAdapter.submitList(state.persons)
+                allAdapter.submitList(state.persons)
+                todayAdapter.submitList(state.todayBirthdays)
+
+                val hasToday = state.todayBirthdays.isNotEmpty()
+                binding.todayBirthdayTitle.visibility = if (hasToday) View.VISIBLE else View.GONE
+                binding.todayRecyclerView.visibility = if (hasToday) View.VISIBLE else View.GONE
             }
         }
     }

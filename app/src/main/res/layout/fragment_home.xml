@@ -1,28 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/homeRoot"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".ui.home.HomeFragment">
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/personsRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <!-- 🎉 Bugün Doğum Günü Başlığı -->
+    <TextView
+        android:id="@+id/todayBirthdayTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Bugün Doğum Günü Olanlar 🎉"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- 🎂 Bugün Doğum Günü Listesi -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/todayRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/todayBirthdayTitle" />
+
+    <!-- 👥 Tüm Kişiler Başlığı -->
+    <TextView
+        android:id="@+id/allTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Tüm Kişiler"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/todayRecyclerView" />
+
+    <!-- 📋 Tüm Kişiler Listesi -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/allRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/fab"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/allTitle" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addPersonFab"
+        android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="24dp"
         android:clickable="true"
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_menu_add" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

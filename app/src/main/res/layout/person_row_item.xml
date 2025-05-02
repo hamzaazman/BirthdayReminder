@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.Material3.CardView.Elevated"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginBottom="12dp"
-    android:elevation="4dp"
-    android:padding="12dp">
+    android:elevation="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="8dp">
 
         <TextView
             android:id="@+id/personNameText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Ad Soyad"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:text="Ad Soyad" />
 
         <TextView
             android:id="@+id/personBirthdateText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="01.01.1990"
+            android:textColor="#777"
             android:textSize="14sp"
-            android:textColor="#777" />
+            tools:text="01.01.1990" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

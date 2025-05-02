@@ -3,6 +3,7 @@ package com.hamzaazman.birthdayreminder.di
 import android.content.Context
 import androidx.room.Room
 import com.hamzaazman.birthdayreminder.data.source.local.MainRoomDB
+import com.hamzaazman.birthdayreminder.data.source.local.PersonDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,5 +24,5 @@ object LocalModule {
     }
 
     @Provides
-    fun provideMainDao(database: MainRoomDB): MainDao = database.mainDao()
+    fun provideMainDao(database: MainRoomDB): PersonDao = database.mainDao()
 }

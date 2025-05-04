@@ -12,6 +12,9 @@
         <action
             android:id="@+id/action_homeFragment_to_addPersonFragment"
             app:destination="@id/addPersonFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_editFragment"
+            app:destination="@id/editFragment" />
     </fragment>
     <fragment
         android:id="@+id/addPersonFragment"
@@ -21,6 +24,21 @@
         <action
             android:id="@+id/action_addPersonFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editFragment"
+        android:name="com.hamzaazman.birthdayreminder.ui.edit.EditFragment"
+        android:label="fragment_edit"
+        tools:layout="@layout/fragment_edit" >
+
+
+
+        <action
+            android:id="@+id/action_editFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <argument
+            android:name="person"
+            app:argType="com.hamzaazman.birthdayreminder.domain.model.Person" />
     </fragment>
 
 </navigation>

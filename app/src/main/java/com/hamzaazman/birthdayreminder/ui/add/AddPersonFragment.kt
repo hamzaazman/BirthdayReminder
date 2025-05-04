@@ -40,19 +40,34 @@ class AddPersonFragment : Fragment() {
 
         with(binding) {
 
-            birthDateInput.setOnClickListener {
+            val showDatePicker = {
                 val now = LocalDate.now()
                 val datePicker = DatePickerDialog(
                     requireContext(),
                     { _, year, month, dayOfMonth ->
                         selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
-                        birthDateInput.setText(selectedDate?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
+                        birthDateInput.setText(
+                            selectedDate?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+                        )
                     },
                     now.year,
                     now.monthValue - 1,
                     now.dayOfMonth
                 )
                 datePicker.show()
+            }
+
+            birthDateInput.setOnClickListener {
+                showDatePicker()
+            }
+
+// ✅ Klavye açılmasın ve direk DatePicker gelsin
+            birthDateInput.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    showDatePicker()
+                    // Klavyeyi kapat
+                    birthDateInput.clearFocus()
+                }
             }
 
             saveButton.setOnClickListener {

@@ -3,6 +3,7 @@ package com.hamzaazman.birthdayreminder.ui.home
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
+import com.hamzaazman.birthdayreminder.common.daysUntilNextBirthday
 import com.hamzaazman.birthdayreminder.domain.usecase.GetPersonUseCase
 import com.hamzaazman.birthdayreminder.domain.usecase.GetTodayBirthdaysUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,8 +21,13 @@ class HomeViewModel @Inject constructor(
     val uiState: Flow<HomeUiState> = combine(
         getPersonUseCase(), getTodayBirthdaysUseCase()
     ) { all, today ->
+
+        val sortedAllPersons = all.sortedBy { person ->
+            daysUntilNextBirthday(person.birthDate)
+        }
+
         HomeUiState(
-            persons = all,
+            persons = sortedAllPersons,
             todayBirthdays = today,
             isLoading = false,
         )

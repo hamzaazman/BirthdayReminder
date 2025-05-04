@@ -37,8 +37,8 @@ class PersonAdapter : ListAdapter<Person, PersonAdapter.ViewHolder>(DiffCallback
         @RequiresApi(Build.VERSION_CODES.O)
         fun bind(person: Person) {
             binding.apply {
-                personNameText.text = person.name
-                personBirthdateText.text =
+                textName.text = person.name
+                textBirthDate.text =
                     person.birthDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
                 binding.root.setOnClickListener {
                     onItemClick?.invoke(person)

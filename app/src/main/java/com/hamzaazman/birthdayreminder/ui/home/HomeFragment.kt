@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.hamzaazman.birthdayreminder.common.collect
 import com.hamzaazman.birthdayreminder.databinding.FragmentHomeBinding
+import com.hamzaazman.birthdayreminder.ui.home.adapter.AllPersonAdapter
 import com.hamzaazman.birthdayreminder.ui.home.adapter.PersonAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,7 +27,7 @@ class HomeFragment : Fragment() {
         PersonAdapter()
     }
     private val allAdapter by lazy {
-        PersonAdapter()
+        AllPersonAdapter()
     }
 
     override fun onCreateView(

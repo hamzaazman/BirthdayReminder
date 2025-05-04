@@ -14,6 +14,8 @@ import java.time.format.DateTimeFormatter
 
 class PersonAdapter : ListAdapter<Person, PersonAdapter.ViewHolder>(DiffCallback()) {
 
+    var onItemClick: ((Person) -> Unit)? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
             PersonRowItemBinding.inflate(
@@ -38,6 +40,9 @@ class PersonAdapter : ListAdapter<Person, PersonAdapter.ViewHolder>(DiffCallback
                 personNameText.text = person.name
                 personBirthdateText.text =
                     person.birthDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+                binding.root.setOnClickListener {
+                    onItemClick?.invoke(person)
+                }
             }
         }
     }

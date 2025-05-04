@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.hamzaazman.birthdayreminder.data.model.PersonEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -14,4 +15,7 @@ interface PersonDao {
 
     @Query("SELECT * FROM persons")
     fun getAllPerson(): Flow<List<PersonEntity>>
+
+    @Update
+    suspend fun update(person: PersonEntity)
 }

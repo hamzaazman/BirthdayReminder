@@ -22,4 +22,8 @@ class PersonRepositoryImpl @javax.inject.Inject constructor(
             }
         }
     }
+
+    override suspend fun update(person: Person) {
+        personDao.update(person.toEntity())
+    }
 }

@@ -1,29 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp">
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:navigationIcon="?attr/homeAsUpIndicator" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="24dp">
 
         <EditText
             android:id="@+id/nameInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:cursorVisible="false"
             android:hint="İsim"
-            android:inputType="textPersonName"
-            android:layout_marginBottom="16dp" />
+            android:inputType="textPersonName" />
 
         <EditText
             android:id="@+id/birthDateInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:cursorVisible="false"
             android:hint="Doğum Tarihi (GG.AA.YYYY)"
-            android:inputType="date"
-            android:layout_marginBottom="24dp" />
+            android:inputType="date" />
 
         <Button
             android:id="@+id/saveButton"
@@ -31,4 +41,4 @@
             android:layout_height="wrap_content"
             android:text="Kaydet" />
     </LinearLayout>
-</ScrollView>
+</LinearLayout>

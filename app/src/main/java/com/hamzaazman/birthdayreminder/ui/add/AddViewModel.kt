@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
-class AddPersonViewModel @Inject constructor(
+class AddViewModel @Inject constructor(
     private val addPersonUseCase: AddPersonUseCase
 ) : ViewModel() {
 

@@ -1,15 +1,21 @@
 package com.hamzaazman.birthdayreminder.ui.edit
 
 import android.app.DatePickerDialog
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.hamzaazman.birthdayreminder.R
 import com.hamzaazman.birthdayreminder.databinding.FragmentEditBinding
 import com.hamzaazman.birthdayreminder.domain.model.Person
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,16 +39,40 @@ class EditFragment : Fragment() {
         return binding.root
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.person_item_menu, menu)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val person = args.person
         var selectedDate: LocalDate? = null
+
 
         with(binding) {
             person.let {
                 nameInput.setText(it.name)
                 birthDateInput.setText(it.birthDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
                 selectedDate = it.birthDate
+            }
+
+            toolbar.setNavigationOnClickListener {
+                findNavController().popBackStack()
+            }
+
+            toolbar.inflateMenu(R.menu.person_item_menu)
+
+            toolbar.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.menu_delete -> {
+                        showDeleteDialog()
+                        true
+                    }
+
+                    else -> false
+                }
             }
 
             val showDatePicker = {
@@ -66,7 +96,6 @@ class EditFragment : Fragment() {
                 showDatePicker()
             }
 
-// ✅ Klavye açılmasın ve direk DatePicker gelsin
             birthDateInput.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     showDatePicker()
@@ -102,5 +131,18 @@ class EditFragment : Fragment() {
         }
 
 
+    }
+
+    private fun showDeleteDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Kişiyi Sil")
+            .setMessage("Bu kişiyi silmek istediğine emin misin?")
+            .setPositiveButton("Evet") { _, _ ->
+                viewModel.deletePerson(args.person.id) {
+                    findNavController().popBackStack()
+                }
+            }
+            .setNegativeButton("İptal", null)
+            .show()
     }
 }

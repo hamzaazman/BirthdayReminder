@@ -17,12 +17,12 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
-class AddPersonFragment : Fragment() {
+class AddFragment : Fragment() {
 
     private var _binding: FragmentAddPersonBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: AddPersonViewModel by viewModels()
+    private val viewModel: AddViewModel by viewModels()
     private var selectedDate: LocalDate? = null // DIŞARIDA tanımlanmalı
 
     override fun onCreateView(
@@ -39,6 +39,10 @@ class AddPersonFragment : Fragment() {
 
 
         with(binding) {
+
+            toolbar.setNavigationOnClickListener {
+                findNavController().popBackStack()
+            }
 
             val showDatePicker = {
                 val now = LocalDate.now()
@@ -61,7 +65,6 @@ class AddPersonFragment : Fragment() {
                 showDatePicker()
             }
 
-// ✅ Klavye açılmasın ve direk DatePicker gelsin
             birthDateInput.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     showDatePicker()

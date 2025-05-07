@@ -2,7 +2,6 @@ package com.hamzaazman.birthdayreminder.ui.edit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hamzaazman.birthdayreminder.data.source.local.toEntity
 import com.hamzaazman.birthdayreminder.domain.model.Person
 import com.hamzaazman.birthdayreminder.domain.repository.PersonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,6 +21,13 @@ class EditViewModel @Inject constructor(
             } else {
                 personRepository.update(person)
             }
+            onComplete()
+        }
+    }
+
+    fun deletePerson(id: Int, onComplete: () -> Unit) {
+        viewModelScope.launch {
+            personRepository.deletePerson(id)
             onComplete()
         }
     }

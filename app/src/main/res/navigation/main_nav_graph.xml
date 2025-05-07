@@ -18,7 +18,7 @@
     </fragment>
     <fragment
         android:id="@+id/addPersonFragment"
-        android:name="com.hamzaazman.birthdayreminder.ui.add.AddPersonFragment"
+        android:name="com.hamzaazman.birthdayreminder.ui.add.AddFragment"
         android:label="fragment_add_person"
         tools:layout="@layout/fragment_add_person" >
         <action

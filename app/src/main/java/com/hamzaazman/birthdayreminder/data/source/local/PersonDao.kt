@@ -18,4 +18,7 @@ interface PersonDao {
 
     @Update
     suspend fun update(person: PersonEntity)
+
+    @Query("DELETE FROM persons WHERE id = :id")
+    suspend fun deletePerson(id: Int)
 }

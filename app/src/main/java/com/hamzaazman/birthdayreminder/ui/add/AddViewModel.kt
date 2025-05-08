@@ -27,7 +27,7 @@ class AddViewModel @Inject constructor(
                 addPersonUseCase(person)
                 onSuccess()
             } catch (e: Exception) {
-                // hatalı tarih girildiyse veya başka bir hata varsa logla
+
                 Log.e("AddPersonViewModel", "Hata: ${e.message}")
             }
         }

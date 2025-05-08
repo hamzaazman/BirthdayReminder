@@ -12,7 +12,7 @@ import com.hamzaazman.birthdayreminder.domain.model.Person
 import java.time.format.DateTimeFormatter
 
 
-class PersonAdapter : ListAdapter<Person, PersonAdapter.ViewHolder>(DiffCallback()) {
+class TodayAdapter : ListAdapter<Person, TodayAdapter.ViewHolder>(DiffCallback()) {
 
     var onItemClick: ((Person) -> Unit)? = null
 

@@ -1,6 +1,5 @@
 package com.hamzaazman.birthdayreminder.ui.add
 
-import android.app.DatePickerDialog
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -9,11 +8,15 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.hamzaazman.birthdayreminder.R
 import com.hamzaazman.birthdayreminder.common.viewBinding
 import com.hamzaazman.birthdayreminder.databinding.FragmentAddPersonBinding
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
@@ -43,21 +46,21 @@ class AddFragment : Fragment(R.layout.fragment_add_person) {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setupListeners() = with(binding) {
         val showDatePicker = {
-            val now = LocalDate.now()
-            val datePicker = DatePickerDialog(
-                requireContext(),
-                { _, year, month, dayOfMonth ->
-                    selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
-                    birthDateInput.setText(
-                        selectedDate?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
-                    )
-                },
-                now.year,
-                now.monthValue - 1,
-                now.dayOfMonth
-            )
-            datePicker.show()
+            val picker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Doğum Tarihi Seç")
+                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                .build()
+
+            picker.addOnPositiveButtonClickListener { selection ->
+                val instant = Instant.ofEpochMilli(selection)
+                val selected = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toLocalDate()
+                selectedDate = selected
+                binding.birthDateInput.setText(selected.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
+            }
+
+            picker.show(parentFragmentManager, "DATE_PICKER")
         }
+
 
         birthDateInput.setOnClickListener {
             showDatePicker()

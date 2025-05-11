@@ -8,16 +8,15 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.datepicker.MaterialDatePicker
 import com.hamzaazman.birthdayreminder.R
+import com.hamzaazman.birthdayreminder.common.TurkishDateFormatter
+import com.hamzaazman.birthdayreminder.common.createBirthDatePicker
+import com.hamzaazman.birthdayreminder.common.formatTurkish
+import com.hamzaazman.birthdayreminder.common.setupDatePicker
 import com.hamzaazman.birthdayreminder.common.viewBinding
 import com.hamzaazman.birthdayreminder.databinding.FragmentAddPersonBinding
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.Instant
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
 class AddFragment : Fragment(R.layout.fragment_add_person) {
@@ -46,47 +45,33 @@ class AddFragment : Fragment(R.layout.fragment_add_person) {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setupListeners() = with(binding) {
         val showDatePicker = {
-            val picker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText("Doğum Tarihi Seç")
-                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
-                .build()
-
-            picker.addOnPositiveButtonClickListener { selection ->
-                val instant = Instant.ofEpochMilli(selection)
-                val selected = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toLocalDate()
+            val picker = createBirthDatePicker(selectedDate) { selected ->
                 selectedDate = selected
-                binding.birthDateInput.setText(selected.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
+                binding.birthDateInput.setText(
+                    selected.format(TurkishDateFormatter)
+                )
             }
-
             picker.show(parentFragmentManager, "DATE_PICKER")
         }
 
-
-        birthDateInput.setOnClickListener {
+        birthDateInput.setupDatePicker {
             showDatePicker()
-        }
-
-        birthDateInput.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                showDatePicker()
-                birthDateInput.clearFocus()
-            }
         }
 
         saveButton.setOnClickListener {
             val name = nameInput.text.toString()
+            val date = selectedDate
 
-            if (name.isNotBlank() && selectedDate != null) {
-                val birthDateStr =
-                    selectedDate!!.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
-                viewModel.savePerson(name, birthDateStr) {
-                    findNavController().popBackStack()
-                }
-            } else {
-                Toast.makeText(requireContext(), "Tüm alanları doldurun", Toast.LENGTH_SHORT)
-                    .show()
+            if (name.isBlank() || date == null) {
+                Toast.makeText(requireContext(), "Tüm alanları doldurun", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            viewModel.savePerson(name, date.formatTurkish) {
+                findNavController().popBackStack()
             }
         }
+
     }
 
 }

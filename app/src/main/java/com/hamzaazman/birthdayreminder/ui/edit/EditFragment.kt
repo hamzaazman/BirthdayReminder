@@ -11,18 +11,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hamzaazman.birthdayreminder.R
+import com.hamzaazman.birthdayreminder.common.TurkishDateFormatter
+import com.hamzaazman.birthdayreminder.common.createBirthDatePicker
+import com.hamzaazman.birthdayreminder.common.setupDatePicker
 import com.hamzaazman.birthdayreminder.common.viewBinding
 import com.hamzaazman.birthdayreminder.databinding.FragmentEditBinding
 import com.hamzaazman.birthdayreminder.domain.model.Person
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.Instant
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
@@ -53,43 +51,24 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
     private fun bindPersonData() = with(binding) {
         val person = args.person
         nameInput.setText(person.name)
-        birthDateInput.setText(person.birthDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
+        birthDateInput.setText(person.birthDate.format(TurkishDateFormatter))
         selectedDate = person.birthDate
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setupListeners() = with(binding) {
         val showDatePicker = {
-            val zoneId = ZoneId.systemDefault()
-
-            val selectedMillis = selectedDate?.atTime(12, 0)?.atZone(zoneId)?.withZoneSameInstant(ZoneOffset.UTC)
-                ?.toInstant()?.toEpochMilli()
-                ?: MaterialDatePicker.todayInUtcMilliseconds()
-
-            val picker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText("Doğum Tarihi Seç")
-                .setSelection(selectedMillis)
-                .build()
-
-            picker.addOnPositiveButtonClickListener { selection ->
-                val instant = Instant.ofEpochMilli(selection)
-                val selected = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toLocalDate()
+            val picker = createBirthDatePicker(selectedDate) { selected ->
                 selectedDate = selected
                 binding.birthDateInput.setText(
-                    selected.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+                    selected.format(TurkishDateFormatter)
                 )
             }
-
             picker.show(parentFragmentManager, "DATE_PICKER")
         }
 
-        birthDateInput.setOnClickListener { showDatePicker() }
-
-        birthDateInput.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                showDatePicker()
-                birthDateInput.clearFocus()
-            }
+        birthDateInput.setupDatePicker {
+            showDatePicker()
         }
 
         saveButton.setOnClickListener { savePerson() }
@@ -120,8 +99,7 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         val birthDateStr = birthDateInput.text.toString()
 
         if (name.isNotEmpty() && birthDateStr.isNotEmpty()) {
-            val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-            val birthDate = LocalDate.parse(birthDateStr, formatter)
+            val birthDate = LocalDate.parse(birthDateStr, TurkishDateFormatter)
 
             val updatedPerson = Person(
                 id = args.person.id,

@@ -1,0 +1,34 @@
+name: Build APK
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    name: Build & Upload APK
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Grant execute permission to gradlew
+      run: chmod +x ./gradlew
+
+    - name: Build release APK
+      run: ./gradlew assembleRelease
+
+    - name: Upload release APK to GitHub release
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: app/build/outputs/apk/release/app-release.apk
+        tag: nightly-build
+        name: "Nightly Build"
+        allowUpdates: true

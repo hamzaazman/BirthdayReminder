@@ -22,7 +22,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
-class EditFragment : Fragment() {
+class EditFragment : Fragment(R.layout.fragment_edit) {
     private val binding by viewBinding(FragmentEditBinding::bind)
 
     private val viewModel: EditViewModel by viewModels()

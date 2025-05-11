@@ -5,7 +5,7 @@
     android:id="@+id/homeRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:padding="12dp"
     tools:context=".ui.home.HomeFragment">
 
     <!-- 🎉 Bugün Doğum Günü Başlığı -->
@@ -64,7 +64,9 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="12dp"
         android:clickable="true"
+        app:elevation="0dp"
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

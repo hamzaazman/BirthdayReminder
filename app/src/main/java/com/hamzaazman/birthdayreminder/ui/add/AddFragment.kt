@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.hamzaazman.birthdayreminder.R
 import com.hamzaazman.birthdayreminder.common.viewBinding
 import com.hamzaazman.birthdayreminder.databinding.FragmentAddPersonBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -16,7 +17,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
-class AddFragment : Fragment() {
+class AddFragment : Fragment(R.layout.fragment_add_person) {
 
     private val binding by viewBinding(FragmentAddPersonBinding::bind)
 

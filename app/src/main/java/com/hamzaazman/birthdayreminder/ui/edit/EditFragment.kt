@@ -22,6 +22,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
@@ -59,16 +60,24 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setupListeners() = with(binding) {
         val showDatePicker = {
+            val zoneId = ZoneId.systemDefault()
+
+            val selectedMillis = selectedDate?.atTime(12, 0)?.atZone(zoneId)?.withZoneSameInstant(ZoneOffset.UTC)
+                ?.toInstant()?.toEpochMilli()
+                ?: MaterialDatePicker.todayInUtcMilliseconds()
+
             val picker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Doğum Tarihi Seç")
-                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                .setSelection(selectedMillis)
                 .build()
 
             picker.addOnPositiveButtonClickListener { selection ->
                 val instant = Instant.ofEpochMilli(selection)
                 val selected = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toLocalDate()
                 selectedDate = selected
-                binding.birthDateInput.setText(selected.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
+                binding.birthDateInput.setText(
+                    selected.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+                )
             }
 
             picker.show(parentFragmentManager, "DATE_PICKER")

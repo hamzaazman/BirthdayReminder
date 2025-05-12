@@ -69,11 +69,18 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 allAdapter.submitList(state.persons)
                 todayAdapter.submitList(state.todayBirthdays)
 
-                todayBirthdayTitle.isVisible = state.hasTodayBirthdays
-                todayRecyclerView.isVisible = state.todayBirthdays.isNotEmpty()
+                emptySection.isVisible = state.persons.isEmpty()
 
-                allTitle.isVisible = state.hasAllBirthdays
-                allRecyclerView.isVisible = state.hasAllBirthdays
+                todaySection.isVisible = state.hasTodayBirthdays
+
+                //todayBirthdayTitle.isVisible = state.hasTodayBirthdays
+                //todayRecyclerView.isVisible = state.todayBirthdays.isNotEmpty()
+
+
+                allSection.isVisible = state.hasAllBirthdays
+
+                //allTitle.isVisible = state.hasAllBirthdays
+                //allRecyclerView.isVisible = state.hasAllBirthdays
             }
         }
     }

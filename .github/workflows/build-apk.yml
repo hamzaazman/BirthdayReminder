@@ -1,0 +1,56 @@
+name: Build APK
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build & Upload APK
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Cache Gradle dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          gradle-${{ runner.os }}-
+
+    - name: Decode keystore from base64 and save
+      run: echo "${{ secrets.KEYSTORE_FILE_PATH }}" | base64 --decode > keystore.jks
+
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Grant execute permission to gradlew
+      run: chmod +x ./gradlew
+
+    - name: Build release APK
+      run: ./gradlew assembleRelease
+
+    - name: Upload release APK to GitHub release
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: app/build/outputs/apk/release/app-release.apk
+        tag: nightly-build
+        name: "Preview Build"
+        allowUpdates: true
+        
+    env:
+      KEYSTORE_FILE_PATH: ${{ secrets.KEYSTORE_FILE_PATH }}
+      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}

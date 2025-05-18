@@ -8,5 +8,8 @@ import java.time.LocalDate
 data class Person(
     val id: Int = 0,
     val name: String,
-    val birthDate: LocalDate
+    val birthDate: LocalDate,
+    val phoneNumber: String?,
+    val note: String?,
+    val profileImageUri: String?
 ) : Parcelable

@@ -6,4 +6,8 @@
     </style>
 
     <style name="Theme.BirthdayReminder" parent="Base.Theme.BirthdayReminder" />
+
+    <style name="ShapeAppearanceOverlay.App.CornerSize50Percent" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>

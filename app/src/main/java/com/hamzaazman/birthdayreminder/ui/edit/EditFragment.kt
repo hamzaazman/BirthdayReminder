@@ -54,16 +54,15 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
     private fun bindPersonData() = with(binding) {
         val person = args.person
         selectedDate = person.birthDate
+        val uri = person.profileImageUri
 
+        if (!uri.isNullOrEmpty()) {
+            profileImageView.setImageURI(Uri.parse(uri))
+        }
         nameInput.setText(person.name)
         birthDateInput.setText(person.birthDate.format(TurkishDateFormatter))
         phoneInput.setText(person.phoneNumber)
         noteInput.setText(person.note)
-
-        val uri = person.profileImageUri
-        if (!uri.isNullOrEmpty()) {
-            profileImageView.setImageURI(Uri.parse(uri))
-        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -131,7 +130,7 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
                 birthDate = birthDate,
                 phoneNumber = phoneInput.text.toString(),
                 note = noteInput.text.toString(),
-                profileImageUri = args.person.profileImageUri
+                profileImageUri = selectedImageUri.toString()
             )
 
             viewModel.savePerson(updatedPerson) {
@@ -155,3 +154,4 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
             .show()
     }
 }
+

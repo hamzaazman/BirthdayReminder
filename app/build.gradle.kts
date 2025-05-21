@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.hilt.plugin)
     alias(libs.plugins.navigation.safe.args)
     id("kotlin-parcelize")
+
 }
 
 android {
@@ -75,6 +76,8 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.fragment.ktx)
+
+    implementation(libs.glide)
 
     // Room
     ksp(libs.room.compiler)

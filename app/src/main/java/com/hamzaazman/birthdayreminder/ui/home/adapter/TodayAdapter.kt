@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter
 
 class TodayAdapter : ListAdapter<Person, TodayAdapter.ViewHolder>(DiffCallback()) {
 
-    var onItemClick: ((Person) -> Unit)? = null
+    var onItemClick: ((Int) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
@@ -41,7 +41,7 @@ class TodayAdapter : ListAdapter<Person, TodayAdapter.ViewHolder>(DiffCallback()
                 textBirthDate.text =
                     person.birthDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
                 binding.root.setOnClickListener {
-                    onItemClick?.invoke(person)
+                    onItemClick?.invoke(person.id)
                 }
             }
         }

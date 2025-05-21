@@ -7,6 +7,8 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.hamzaazman.birthdayreminder.common.daysUntilNextBirthday
 import com.hamzaazman.birthdayreminder.databinding.AllPersonItemBinding
 import com.hamzaazman.birthdayreminder.domain.model.Person
@@ -14,7 +16,7 @@ import java.time.format.DateTimeFormatter
 
 class AllPersonAdapter : ListAdapter<Person, AllPersonAdapter.PersonViewHolder>(DiffCallback()) {
 
-    var onItemClick: ((Person) -> Unit)? = null
+    var onItemClick: ((Int) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PersonViewHolder {
         val binding = AllPersonItemBinding.inflate(
@@ -41,6 +43,13 @@ class AllPersonAdapter : ListAdapter<Person, AllPersonAdapter.PersonViewHolder>(
             binding.textName.text = person.name
             binding.textBirthDate.text = birthDate.format(formatter)
 
+            Glide.with(binding.root.context)
+                .load(person.profileImageUri)
+                .circleCrop()
+                .placeholder(com.hamzaazman.birthdayreminder.R.drawable.calendar_24)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(binding.imageProfile)
+
             val daysLeft = daysUntilNextBirthday(birthDate)
 
             binding.textDayLeft.text = when (daysLeft) {
@@ -50,7 +59,7 @@ class AllPersonAdapter : ListAdapter<Person, AllPersonAdapter.PersonViewHolder>(
             }
 
             binding.root.setOnClickListener {
-                onItemClick?.invoke(person)
+                onItemClick?.invoke(person.id)
             }
         }
     }

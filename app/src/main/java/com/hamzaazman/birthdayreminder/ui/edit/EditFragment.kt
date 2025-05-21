@@ -11,17 +11,25 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.signature.ObjectKey
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hamzaazman.birthdayreminder.R
 import com.hamzaazman.birthdayreminder.common.TurkishDateFormatter
 import com.hamzaazman.birthdayreminder.common.createBirthDatePicker
+import com.hamzaazman.birthdayreminder.common.saveResizedImageToInternalStorage
 import com.hamzaazman.birthdayreminder.common.setupDatePicker
 import com.hamzaazman.birthdayreminder.common.viewBinding
 import com.hamzaazman.birthdayreminder.databinding.FragmentEditBinding
 import com.hamzaazman.birthdayreminder.domain.model.Person
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import java.io.File
 import java.time.LocalDate
 
 @AndroidEntryPoint
@@ -52,17 +60,32 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun bindPersonData() = with(binding) {
-        val person = args.person
-        selectedDate = person.birthDate
-        val uri = person.profileImageUri
-
-        if (!uri.isNullOrEmpty()) {
-            profileImageView.setImageURI(Uri.parse(uri))
+        viewModel.getPersonById(args.personId) {
+            if (it == null) {
+                Toast.makeText(requireContext(), "Kişi bulunamadı", Toast.LENGTH_SHORT).show()
+                findNavController().popBackStack()
+            }
         }
-        nameInput.setText(person.name)
-        birthDateInput.setText(person.birthDate.format(TurkishDateFormatter))
-        phoneInput.setText(person.phoneNumber)
-        noteInput.setText(person.note)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.person.collectLatest { person ->
+                selectedDate = person?.birthDate
+                val uri = person?.profileImageUri
+
+                Glide.with(profileImageView)
+                    .load(uri)
+                    .thumbnail(0.1f)
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                    .signature(ObjectKey(uri.hashCode()))
+                    .circleCrop()
+                    .into(profileImageView)
+
+                nameInput.setText(person?.name)
+                birthDateInput.setText(person?.birthDate?.format(TurkishDateFormatter))
+                phoneInput.setText(person?.phoneNumber)
+                noteInput.setText(person?.note)
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -92,10 +115,16 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
     private val pickImageLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
-                selectedImageUri = it
-                binding.profileImageView.setImageURI(it)
+                viewLifecycleOwner.lifecycleScope.launch {
+                    val savedPath = requireContext().saveResizedImageToInternalStorage(it)
+                    savedPath?.let { path ->
+                        selectedImageUri = Uri.fromFile(File(path))
+                        binding.profileImageView.setImageURI(selectedImageUri)
+                    }
+                }
             }
         }
+
 
     private fun setupToolbar() = with(binding) {
         toolbar.setNavigationOnClickListener {
@@ -124,13 +153,16 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         if (name.isNotEmpty() && birthDateStr.isNotEmpty()) {
             val birthDate = LocalDate.parse(birthDateStr, TurkishDateFormatter)
 
+            val profileImageUri = selectedImageUri?.toString() ?: viewModel.person.value?.profileImageUri
+
+
             val updatedPerson = Person(
-                id = args.person.id,
+                id = args.personId,
                 name = name,
                 birthDate = birthDate,
                 phoneNumber = phoneInput.text.toString(),
                 note = noteInput.text.toString(),
-                profileImageUri = selectedImageUri.toString()
+                profileImageUri = profileImageUri
             )
 
             viewModel.savePerson(updatedPerson) {
@@ -141,12 +173,13 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         }
     }
 
+
     private fun showDeleteDialog() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Kişiyi Sil")
             .setMessage("Bu kişiyi silmek istediğine emin misin?")
             .setPositiveButton("Evet") { _, _ ->
-                viewModel.deletePerson(args.person.id) {
+                viewModel.deletePerson(args.personId) {
                     findNavController().popBackStack()
                 }
             }

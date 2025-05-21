@@ -6,6 +6,7 @@ import com.hamzaazman.birthdayreminder.data.source.local.toEntity
 import com.hamzaazman.birthdayreminder.domain.model.Person
 import com.hamzaazman.birthdayreminder.domain.repository.PersonRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 class PersonRepositoryImpl @javax.inject.Inject constructor(
@@ -21,6 +22,10 @@ class PersonRepositoryImpl @javax.inject.Inject constructor(
                 it.toDomain()
             }
         }
+    }
+
+    override suspend fun getPersonById(id: Int): Flow<Person?> = flow {
+        emit(personDao.getPersonById(id)?.toDomain())
     }
 
     override suspend fun update(person: Person) {

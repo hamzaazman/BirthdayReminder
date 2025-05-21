@@ -37,8 +37,8 @@
             android:id="@+id/action_editFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
         <argument
-            android:name="person"
-            app:argType="com.hamzaazman.birthdayreminder.domain.model.Person" />
+            android:name="personId"
+            app:argType="integer" />
     </fragment>
 
 </navigation>

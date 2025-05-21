@@ -1,10 +1,18 @@
 package com.hamzaazman.birthdayreminder.common
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Build
 import android.view.View
 import androidx.annotation.RequiresApi
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -84,3 +92,36 @@ val TurkishDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM
 val LocalDate.formatTurkish: String
     @RequiresApi(Build.VERSION_CODES.O)
     get() = format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+
+
+suspend fun Context.saveResizedImageToInternalStorage(
+    uri: Uri,
+    maxSize: Int = 512
+): String? = withContext(Dispatchers.IO) {
+    try {
+        val inputStream = contentResolver.openInputStream(uri)
+        val originalBitmap = BitmapFactory.decodeStream(inputStream)
+
+        val ratio = originalBitmap.width.toFloat() / originalBitmap.height
+        val (newWidth, newHeight) = if (ratio > 1) {
+            maxSize to (maxSize / ratio).toInt()
+        } else {
+            (maxSize * ratio).toInt() to maxSize
+        }
+
+        val resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true)
+
+        val fileName = "profile_${System.currentTimeMillis()}.jpg"
+        val file = File(filesDir, fileName)
+
+        val outputStream = FileOutputStream(file)
+        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream)
+        outputStream.flush()
+        outputStream.close()
+
+        return@withContext file.absolutePath
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+}

@@ -38,14 +38,14 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             todayRecyclerView.adapter = todayAdapter
             allRecyclerView.adapter = allAdapter
 
-            todayAdapter.onItemClick = { person ->
+            todayAdapter.onItemClick = { personId ->
                 val action =
-                    HomeFragmentDirections.actionHomeFragmentToEditFragment(person)
+                    HomeFragmentDirections.actionHomeFragmentToEditFragment(personId)
                 findNavController().navigate(action)
             }
-            allAdapter.onItemClick = { person ->
+            allAdapter.onItemClick = { personId ->
                 val action =
-                    HomeFragmentDirections.actionHomeFragmentToEditFragment(person)
+                    HomeFragmentDirections.actionHomeFragmentToEditFragment(personId)
                 findNavController().navigate(action)
             }
 

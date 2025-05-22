@@ -1,0 +1,183 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+
+# Built application files
+*.apk
+*.apks
+*.aab
+
+# Gradle files
+/.gradle
+/build/
+/generated/
+/out/
+
+# Local configuration files (sensitive information)
+local.properties
+gradle.properties
+/app/google-services.json
+captures/
+
+# IntelliJ IDEA related files
+.idea/
+*.iml
+*.iws
+*.ipr
+.DS_Store
+
+# Android Studio specific files
+.gradle
+/build/
+
+# Kotlin build output
+/kotlin-build/
+
+# Java bytecode and optimized code
+*.class
+*.dex
+*.jsh
+
+# C/C++ build output
+/obj/
+/jniLibs/
+
+# NDK generated files
+/local/
+
+# CMake build output
+/CMakeBuild/
+
+# Profiling data
+*.gcda
+*.gcno
+
+# Log files
+*.log
+
+# Crash reports
+/crashlytics-build.properties
+/fabric.properties
+
+# External native build system debug output files
+/build/intermediates/cmake/debug/obj
+/build/intermediates/ndkBuild/debug/obj
+
+# External native build system release output files
+/build/intermediates/cmake/release/obj
+/build/intermediates/ndkBuild/release/obj
+
+# Firebase Performance Monitoring trace files
+*.trace
+
+# Keystore files (keep secure!)
+# *.jks
+# *.keystore
+
+# Screenshots from tests
+screencapture/
+
+# Android lint output
+lint-results.xml
+lint-results-debug.html
+lint-results-release.html
+
+# Instant Run files
+*.ir.apk
+instant-run/
+
+# Firebase ML model files
+/mlkit/local/downloaded_models/
+
+# Navigation safe args files
+*.safe.navArgs.kt
+
+# Generated data binding files
+databinding/
+
+# Generated view binding files
+viewbinding/
+
+# Resource compiler output
+/build/generated/res/resValues/debug/values*.xml
+/build/generated/res/resValues/release/values*.xml
+/build/generated/res/resValues/*/values*.xml
+
+# Other generated files
+/build/generated/source/buildConfig/debug/*.java
+/build/generated/source/buildConfig/release/*.java
+/build/generated/source/kapt/debug/*.kt
+/build/generated/source/kapt/release/*.kt
+/build/generated/aidl/debug/*.aidl
+/build/generated/aidl/release/*.aidl
+
+# Robolectric output
+/robolectric-build/
+
+# Test outputs
+/test-results/
+
+# Files for local unit tests
+/unitTests/
+
+# Files for instrumented tests
+/androidTest/
+
+# Coverage data
+*.ec
+*.em
+coverage.ec
+jacoco.exec
+
+# Archives (if you create any manually)
+*.zip
+*.rar
+*.gz
+*.tar.bz2
+*.tgz
+
+# IntelliJ Patch files
+*.patch
+
+# Files created by the Android Gradle Plugin (AGP)
+.transforms/
+
+# Files related to Compose build
+/build/generated/ksp/debug/kotlin/*.kt
+/build/generated/ksp/release/kotlin/*.kt
+
+# Files related to Hilt/Dagger
+/build/generated/hilt/component_trees/debug/*.java
+/build/generated/hilt/component_trees/release/*.java
+
+# Jetpack Compose preview files
+*.preview.*.kt
+
+# Detekt reports
+detekt-report.xml
+detekt-report.html
+detekt-baseline.xml
+
+# Ktlint reports
+ktlint-report.xml
+
+# Dokka output
+/dokka/
+
+# Dependency cache
+/.m2/repository/*
+
+# Node.js and npm files (if you have a web component)
+node_modules/
+package-lock.json
+
+# Yarn files (if you use Yarn)
+yarn.lock
+
+# Ruby Gems (if you use them for tooling)
+.bundle/
+vendor/bundle
+
+# OS Specific files
+.DS_Store
+Thumbs.db

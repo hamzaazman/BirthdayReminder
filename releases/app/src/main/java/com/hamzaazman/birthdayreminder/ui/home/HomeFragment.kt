@@ -9,16 +9,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hamzaazman.birthdayreminder.R
-import com.hamzaazman.birthdayreminder.common.ApkDownloader
+import com.hamzaazman.birthdayreminder.common.UpdateManager
 import com.hamzaazman.birthdayreminder.common.collect
 import com.hamzaazman.birthdayreminder.common.viewBinding
-import com.hamzaazman.birthdayreminder.data.model.UpdateInfo
-import com.hamzaazman.birthdayreminder.data.source.remote.UpdateChecker
 import com.hamzaazman.birthdayreminder.databinding.FragmentHomeBinding
 import com.hamzaazman.birthdayreminder.ui.home.adapter.AllPersonAdapter
 import com.hamzaazman.birthdayreminder.ui.home.adapter.TodayAdapter
+import com.hamzaazman.birthdayreminder.ui.update.UpdateDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -37,14 +35,21 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val updateUrl = "https://hamzaazman.github.io/BirthdayReminder/releases/update.json"
 
 
-
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         lifecycleScope.launch {
-            val updateInfo = UpdateChecker(requireContext(), updateUrl).checkForUpdate()
-            updateInfo?.let { showUpdateDialog(it) }
+            UpdateManager.checkForUpdate(
+                context = requireContext(),
+                updateUrl = "https://hamzaazman.github.io/BirthdayReminder/releases/update.json"
+            ) { updateInfo ->
+                UpdateDialogFragment(updateInfo).show(
+                    parentFragmentManager,
+                    "update_dialog"
+                )
+            }
+
         }
 
         with(binding) {
@@ -74,16 +79,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         collectState()
     }
 
-    private fun showUpdateDialog(updateInfo: UpdateInfo) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Yeni Güncelleme (${updateInfo.versionName})")
-            .setMessage(updateInfo.changelog.ifEmpty { "Yeni bir güncelleme mevcut." })
-            .setPositiveButton("Güncelle") { _, _ ->
-                ApkDownloader(requireContext()).downloadAndInstall(updateInfo.downloadUrl)
-            }
-            .setNegativeButton("Sonra", null)
-            .show()
-    }
 
 
     @RequiresApi(Build.VERSION_CODES.O)

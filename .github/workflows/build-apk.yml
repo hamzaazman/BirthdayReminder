@@ -50,27 +50,29 @@ jobs:
         echo "APK_PATH=$APK_PATH" >> $GITHUB_ENV
         echo "apk=$APK_PATH" >> $GITHUB_OUTPUT
 
-    - name: Rename APK
+    - name: Rename and move APK to root
       run: |
         VERSION_NAME=1.0.0
         echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
-        cp app/build/outputs/apk/release/app-release.apk BirthdayReminder-v$VERSION_NAME.apk
+        cp app/build/outputs/apk/release/app-release.apk ./BirthdayReminder-v$VERSION_NAME.apk
 
     - name: Create update.json
       run: |
-        VERSION_CODE=$(date +%s) # İsteğe bağlı sabitlenebilir
+        VERSION_NAME=1.0.0
+        VERSION_CODE=$(date +%s) # otomatik versiyon kodu
+        echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
         echo '{
           "versionCode": '"$VERSION_CODE"',
           "versionName": "'"$VERSION_NAME"'",
-          "apkUrl": "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/releases/myapp-v'"$VERSION_NAME"'.apk",
+          "apkUrl": "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/BirthdayReminder-v'"$VERSION_NAME"'.apk",
           "changelog": "Otomatik yayın"
         }' > update.json
 
-    - name: Upload files to GitHub Pages
+    - name: Upload update.json and APK to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./  # İçinde update.json ve APK olacak
+        publish_dir: ./  # Burada hem APK hem update.json var
         destination_dir: releases
         
     env:

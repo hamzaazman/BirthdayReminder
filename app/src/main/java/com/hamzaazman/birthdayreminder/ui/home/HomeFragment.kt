@@ -34,7 +34,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val allAdapter by lazy {
         AllPersonAdapter()
     }
-    private val updateUrl = "https://yourdomain.com/update.json"
+    private val updateUrl = "https://GITHUB_USERNAME.github.io/REPO_NAME/releases/update.json"
+
 
 
     @RequiresApi(Build.VERSION_CODES.O)

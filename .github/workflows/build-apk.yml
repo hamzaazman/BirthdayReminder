@@ -6,6 +6,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   build:
@@ -38,16 +40,28 @@ jobs:
     - name: Grant execute permission to gradlew
       run: chmod +x ./gradlew
 
-    - name: Build release APK
-      run: ./gradlew assembleRelease
+    - name: Rename APK
+      run: |
+        VERSION_NAME=$(./gradlew -q printVersionName)
+        cp app/build/outputs/apk/release/app-release.apk myapp-v$VERSION_NAME.apk
+        echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
 
-    - name: Upload release APK to GitHub release
-      uses: ncipollo/release-action@v1
+    - name: Create update.json
+      run: |
+        VERSION_CODE=$(date +%s) # İsteğe bağlı sabitlenebilir
+        echo '{
+          "versionCode": '"$VERSION_CODE"',
+          "versionName": "'"$VERSION_NAME"'",
+          "apkUrl": "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/releases/myapp-v'"$VERSION_NAME"'.apk",
+          "changelog": "Otomatik yayın"
+        }' > update.json
+
+    - name: Upload files to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
       with:
-        artifacts: app/build/outputs/apk/release/app-release.apk
-        tag: nightly-build
-        name: "Preview Build"
-        allowUpdates: true
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./  # İçinde update.json ve APK olacak
+        destination_dir: releases
         
     env:
       KEYSTORE_FILE_PATH: ${{ secrets.KEYSTORE_FILE_PATH }}

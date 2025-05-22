@@ -42,9 +42,9 @@ jobs:
 
     - name: Rename APK
       run: |
-        VERSION_NAME=$(./gradlew -q printVersionName)
-        cp app/build/outputs/apk/release/app-release.apk myapp-v$VERSION_NAME.apk
+        VERSION_NAME=1.0.0
         echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
+        cp app/build/outputs/apk/release/app-release.apk myapp-v$VERSION_NAME.apk
 
     - name: Create update.json
       run: |

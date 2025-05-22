@@ -14,6 +14,14 @@ android {
 
     android.buildFeatures.buildConfig = true
 
+    tasks.register("printVersionName") {
+        doLast {
+            val versionName = project.version
+            println("Version Name: $versionName")
+        }
+    }
+
+
     defaultConfig {
         applicationId = "com.hamzaazman.birthdayreminder"
         minSdk = 24

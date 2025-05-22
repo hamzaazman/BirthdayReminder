@@ -37,15 +37,15 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Grant execute permission to gradlew
-      run: chmod +x ./gradlew
+    - name: Build release APK
+      run: ./gradlew assembleRelease --stacktrace
 
     - name: Find APK path dynamically
       id: find_apk
       run: |
-       APK_PATH=$(find app/build/outputs -name "*.apk" | head -n 1)
-       echo "APK_PATH=$APK_PATH" >> $GITHUB_ENV
-       echo "apk=$APK_PATH" >> $GITHUB_OUTPUT
+        APK_PATH=$(find app/build/outputs -name "*.apk" | head -n 1)
+        echo "APK_PATH=$APK_PATH" >> $GITHUB_ENV
+        echo "apk=$APK_PATH" >> $GITHUB_OUTPUT
 
     - name: Rename APK
       run: |

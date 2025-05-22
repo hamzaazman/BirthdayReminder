@@ -40,6 +40,13 @@ jobs:
     - name: Grant execute permission to gradlew
       run: chmod +x ./gradlew
 
+    - name: Find APK path dynamically
+      id: find_apk
+      run: |
+       APK_PATH=$(find app/build/outputs -name "*.apk" | head -n 1)
+       echo "APK_PATH=$APK_PATH" >> $GITHUB_ENV
+       echo "apk=$APK_PATH" >> $GITHUB_OUTPUT
+
     - name: Rename APK
       run: |
         VERSION_NAME=1.0.0

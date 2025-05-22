@@ -40,6 +40,11 @@ jobs:
     - name: Grant execute permission to gradlew
       run: chmod +x ./gradlew
 
+    - name: List build outputs
+      run: |
+          ls -R app/build/outputs
+
+
     - name: Find APK path dynamically
       id: find_apk
       run: |

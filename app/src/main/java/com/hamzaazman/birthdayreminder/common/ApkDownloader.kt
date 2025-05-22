@@ -1,53 +1,59 @@
 package com.hamzaazman.birthdayreminder.common
 
-import android.app.DownloadManager
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.net.Uri
-import android.os.Environment
-import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.BufferedInputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.net.HttpURLConnection
+import java.net.URL
 
-class ApkDownloader(private val context: Context) {
 
-    fun downloadAndInstall(apkUrl: String, fileName: String = "update.apk") {
-        val request = DownloadManager.Request(apkUrl.toUri()).apply {
-            setTitle("Güncelleme indiriliyor")
-            setDescription("Yeni sürüm indiriliyor...")
-            setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, fileName)
-            setMimeType("application/vnd.android.package-archive")
-        }
+object ApkDownloader {
 
-        val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val downloadId = downloadManager.enqueue(request)
+    fun downloadApk(
+        context: Context,
+        url: String,
+        onProgress: (Int) -> Unit,
+        onDownloaded: (File) -> Unit
+    ) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val connection = URL(url).openConnection() as HttpURLConnection
+                connection.connect()
 
-        val receiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent?) {
-                val downloadedId = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-                if (downloadedId == downloadId) {
-                    val uri = downloadManager.getUriForDownloadedFile(downloadId)
-                    installApk(uri)
-                    context.unregisterReceiver(this)
+                val totalSize = connection.contentLength
+                val inputStream = BufferedInputStream(connection.inputStream)
+                val apkFile = File(context.getExternalFilesDir(null), "update.apk")
+                val outputStream = FileOutputStream(apkFile)
+
+                val buffer = ByteArray(1024)
+                var count: Int
+                var downloaded = 0
+
+                while (inputStream.read(buffer).also { count = it } != -1) {
+                    outputStream.write(buffer, 0, count)
+                    downloaded += count
+                    val progress = (downloaded * 100) / totalSize
+                    withContext(Dispatchers.Main) {
+                        onProgress(progress)
+                    }
                 }
+
+                outputStream.flush()
+                outputStream.close()
+                inputStream.close()
+
+                withContext(Dispatchers.Main) {
+                    onDownloaded(apkFile)
+                }
+
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
-
-        ContextCompat.registerReceiver(
-            context,
-            receiver,
-            IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
-            ContextCompat.RECEIVER_NOT_EXPORTED
-        )
-    }
-
-    private fun installApk(uri: Uri) {
-        val intent = Intent(Intent.ACTION_VIEW).apply {
-            setDataAndType(uri, "application/vnd.android.package-archive")
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
-        }
-        context.startActivity(intent)
     }
 }

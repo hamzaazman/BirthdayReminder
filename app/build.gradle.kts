@@ -26,8 +26,12 @@ android {
         applicationId = "com.hamzaazman.birthdayreminder"
         minSdk = 24
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+
+        val appVersionCodeProp = project.findProperty("appVersionCode")
+        val appVersionNameProp = project.findProperty("appVersionName")
+
+        versionCode = (appVersionCodeProp?.toString()?.toIntOrNull() ?: 1)
+        versionName = (appVersionNameProp?.toString() ?: "1.0.0")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true

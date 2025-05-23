@@ -1,20 +1,26 @@
-package com.hamzaazman.birthdayreminder.common
+package com.hamzaazman.birthdayreminder.data.source.remote
 
 import android.content.Context
 import com.hamzaazman.birthdayreminder.data.model.UpdateInfo
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.net.URL
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object UpdateManager {
+@Singleton
+class UpdateManager @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
 
     fun checkForUpdate(
-        context: Context,
         updateUrl: String,
-        onUpdateAvailable: (UpdateInfo) -> Unit
+        onUpdateAvailable: (UpdateInfo) -> Unit,
+        onError: (Exception) -> Unit
     ) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -38,6 +44,9 @@ object UpdateManager {
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                    onError(e) // Hata callback'ini çağır
+                }
             }
         }
     }

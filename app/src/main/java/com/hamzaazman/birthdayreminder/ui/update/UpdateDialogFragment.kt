@@ -1,57 +1,68 @@
 package com.hamzaazman.birthdayreminder.ui.update
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.fragment.app.DialogFragment
-import com.hamzaazman.birthdayreminder.R
-import com.hamzaazman.birthdayreminder.common.ApkDownloader
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.hamzaazman.birthdayreminder.di.ApkDownloader
 import com.hamzaazman.birthdayreminder.data.model.UpdateInfo
+import com.hamzaazman.birthdayreminder.databinding.DialogUpdateBinding
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
+import javax.inject.Inject
 import kotlin.system.exitProcess
 
-
+@AndroidEntryPoint
 class UpdateDialogFragment(
     private val updateInfo: UpdateInfo
 ) : DialogFragment() {
 
-    private lateinit var progressBar: ProgressBar
-    private lateinit var btnUpdate: Button
-    private lateinit var tvStatus: TextView
+    @Inject
+    lateinit var apkDownloader: ApkDownloader
+
+    private var _binding: DialogUpdateBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val builder = AlertDialog.Builder(requireContext())
-        val view = LayoutInflater.from(context).inflate(R.layout.dialog_update, null)
+        _binding = DialogUpdateBinding.inflate(LayoutInflater.from(context))
+        val view = binding.root
 
-        progressBar = view.findViewById(R.id.progressBar)
-        btnUpdate = view.findViewById(R.id.btnUpdate)
-        tvStatus = view.findViewById(R.id.tvStatus)
-
+        val builder = MaterialAlertDialogBuilder(requireContext())
         builder.setView(view)
         val dialog = builder.create()
 
-        btnUpdate.setOnClickListener {
-            btnUpdate.isEnabled = false
-            tvStatus.text = "İndiriliyor..."
-            ApkDownloader.downloadApk(
-                requireContext(),
+        binding.btnUpdate.setOnClickListener {
+            binding.btnUpdate.isEnabled = false
+            binding.tvStatus.text = "İndiriliyor..."
+
+            apkDownloader.downloadApk(
                 updateInfo.downloadUrl,
-                onProgress = { progressBar.progress = it },
+                onProgress = { progress ->
+                    binding.progressBar.progress = progress
+                },
                 onDownloaded = { apkFile ->
-                    tvStatus.text = "İndirildi"
+                    binding.tvStatus.text = "İndirildi"
                     installApk(apkFile)
                     dialog.dismiss()
+                },
+                onError = { exception ->
+                    binding.tvStatus.text = "İndirme başarısız: ${exception.localizedMessage}"
+                    binding.btnUpdate.isEnabled = true
+                    Toast.makeText(requireContext(), "APK indirilemedi.", Toast.LENGTH_LONG).show()
                 }
             )
         }
 
         return dialog
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun installApk(file: File) {

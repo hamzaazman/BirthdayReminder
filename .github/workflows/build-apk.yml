@@ -56,12 +56,12 @@ jobs:
         echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
         cp app/build/outputs/apk/release/app-release.apk ./BirthdayReminder-v$VERSION_NAME.apk
 
-    - name: Generate timestamped tag name
-      id: tag
+    - name: Generate pretty version name
+      id: version
       run: |
-        TAG_NAME=v$(date +'%Y%m%d%H%M%S')
-        echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
-        echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+        VERSION_NAME="v1.0.0-$(date +'%Y.%m.%d')"
+        echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
+        echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
 
     - name: Create update.json
       run: |

@@ -29,8 +29,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val allAdapter by lazy {
         AllPersonAdapter()
     }
-    private val updateUrl = "https://hamzaazman.github.io/BirthdayReminder/releases/update.json"
-
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -77,14 +75,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
                 todaySection.isVisible = state.hasTodayBirthdays
 
-                //todayBirthdayTitle.isVisible = state.hasTodayBirthdays
-                //todayRecyclerView.isVisible = state.todayBirthdays.isNotEmpty()
-
-
                 allSection.isVisible = state.hasAllBirthdays
 
-                //allTitle.isVisible = state.hasAllBirthdays
-                //allRecyclerView.isVisible = state.hasAllBirthdays
             }
         }
     }

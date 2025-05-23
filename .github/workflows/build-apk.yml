@@ -40,27 +40,26 @@ jobs:
     - name: Grant execute permission to gradlew
       run: chmod +x ./gradlew
 
-    - name: Build release APK
-      run: ./gradlew assembleRelease --stacktrace
-
     # --- Sürüm Bilgilerini Al ve Etiket Oluştur ---
     - name: Get App Version and Generate Tags
       id: version_info
       run: |
-        # build.gradle'dan versionName ve versionCode'u oku.
-        # Bu komutlar, build.gradle'da versionName "X.Y.Z" ve versionCode NNNN şeklinde tanımlı olduğunu varsayar.
-        APP_VERSION_NAME=$(grep -m 1 "versionName" app/build.gradle | sed -E "s/.*versionName \"([^\"]+)\".*/\1/")
-        # Eğer versionCode basit bir sayı ise, aşağıdaki gibi okuyun:
-        APP_VERSION_CODE=$(grep -m 1 "versionCode" app/build.gradle | sed -E "s/.*versionCode ([0-9]+).*/\1/")
+        # APP_VERSION_CODE için Unix timestamp kullanıyoruz, bu her zaman benzersiz ve artan olacaktır.
+        # APP_VERSION_NAME için Git tag'ını kullanmayı deneyelim. Eğer yoksa veya boşsa, varsayılan bir değer kullanırız.
+        
+        # En son Git tag'ını al (örn: v1.0.0). Eğer tag yoksa veya boşsa '1.0.0' gibi bir varsayılan kullan
+        APP_VERSION_NAME=$(git describe --tags --abbrev=0 --always | sed 's/^v//' || echo "1.0.0") # 'v' önekini kaldırır
 
-        # Eğer build.gradle'da versionCode yoksa veya her build için benzersiz olmalıysa,
-        # Unix timestamp kullanmak daha güvenli olabilir:
-        if [ -z "$APP_VERSION_CODE" ]; then
-          APP_VERSION_CODE=$(date +%s) # Unix timestamp olarak benzersiz versionCode
+        # Eğer git describe komutu başarısız olursa veya boş bir string dönerse
+        if [ -z "$APP_VERSION_NAME" ] || [ "$APP_VERSION_NAME" == "v" ]; then
+          APP_VERSION_NAME="1.0.0" # Güvenli bir varsayılan değer
         fi
+        
+        APP_VERSION_CODE=$(date +%s) # Unix timestamp (saniye cinsinden) olarak benzersiz versionCode
 
-        # Serbest bırakma etiketi (release tag) ve yeni APK adı için değişkenler oluştur
-        RELEASE_TAG="v${APP_VERSION_NAME}-$(date +'%Y.%m.%d-%H%M%S')" # Daha detaylı bir etiket
+        # RELEASE_TAG, APK dosya adı ve changelog için kullanılacak
+        # RELEASE_TAG'ı daha kısa tutalım ve versionCode ile bitirelim
+        RELEASE_TAG="v${APP_VERSION_NAME}-${{ env.APP_VERSION_CODE }}" 
         NEW_APK_NAME="BirthdayReminder-${{ env.RELEASE_TAG }}.apk"
 
         # Bu değerleri sonraki adımlarda kullanmak üzere ortam değişkenlerine yaz
@@ -69,25 +68,31 @@ jobs:
         echo "RELEASE_TAG=$RELEASE_TAG" >> $GITHUB_ENV
         echo "NEW_APK_NAME=$NEW_APK_NAME" >> $GITHUB_ENV
 
+        # Hata ayıklama çıktıları
+        echo "DEBUG: APP_VERSION_NAME: $APP_VERSION_NAME"
+        echo "DEBUG: APP_VERSION_CODE: $APP_VERSION_CODE"
+        echo "DEBUG: RELEASE_TAG: $RELEASE_TAG"
+        echo "DEBUG: NEW_APK_NAME: $NEW_APK_NAME"
+
+    # --- Build release APK (Parametrelerle) ---
+    - name: Build release APK
+      # Gradle'a -P ile appVersionCode ve appVersionName property'lerini geçir
+      run: ./gradlew assembleRelease -PappVersionCode=${{ env.APP_VERSION_CODE }} -PappVersionName="${{ env.APP_VERSION_NAME }}" --stacktrace
+
     # --- APK'yı Bul ve Yeniden Adlandır ---
     - name: Find and Rename APK
       run: |
-        # app-release.apk'nin doğru yolunu dinamik olarak bul
         APK_INPUT_PATH=$(find app/build/outputs -name "app-release.apk" -print -quit)
         if [ -z "$APK_INPUT_PATH" ]; then
           echo "Error: app-release.apk not found in app/build/outputs!"
           exit 1
         fi
-        # Bulunan APK'yı, oluşturulan yeni adla kök dizine kopyala
         cp "$APK_INPUT_PATH" "./${{ env.NEW_APK_NAME }}"
         echo "Copied $APK_INPUT_PATH to ./${{ env.NEW_APK_NAME }}"
 
     # --- update.json Dosyasını Oluştur ---
     - name: Create update.json
       run: |
-        # JSON çıktısını doğru formatta oluşturmaya dikkat edin:
-        # - Sayısal değerler (versionCode) tırnak içine alınmaz.
-        # - String değerler (versionName, apkUrl, changelog) çift tırnak içine alınır.
         echo '{
           "versionCode": ${{ env.APP_VERSION_CODE }},
           "versionName": "${{ env.APP_VERSION_NAME }}",
@@ -102,8 +107,8 @@ jobs:
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./ # Bu, Actions runner'ının kök dizinindeki dosyaları (APK ve update.json) alır.
-        destination_dir: releases # GitHub Pages'da 'releases' klasörüne yüklenir.
+        publish_dir: ./
+        destination_dir: releases
 
     # --- GitHub Sürümü Oluştur ve APK'yı Yükle ---
     - name: Create GitHub Release and upload APK
@@ -112,7 +117,7 @@ jobs:
         tag_name: ${{ env.RELEASE_TAG }}
         name: ${{ env.RELEASE_TAG }}
         body: "Otomatik yayın"
-        files: ${{ env.NEW_APK_NAME }} # GitHub Release'a yüklenecek doğru APK dosya adını kullan
+        files: ${{ env.NEW_APK_NAME }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

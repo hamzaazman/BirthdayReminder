@@ -7,18 +7,15 @@ import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.hamzaazman.birthdayreminder.R
-import com.hamzaazman.birthdayreminder.common.UpdateManager
 import com.hamzaazman.birthdayreminder.common.collect
 import com.hamzaazman.birthdayreminder.common.viewBinding
 import com.hamzaazman.birthdayreminder.databinding.FragmentHomeBinding
 import com.hamzaazman.birthdayreminder.ui.home.adapter.AllPersonAdapter
 import com.hamzaazman.birthdayreminder.ui.home.adapter.TodayAdapter
-import com.hamzaazman.birthdayreminder.ui.update.UpdateDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -35,22 +32,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val updateUrl = "https://hamzaazman.github.io/BirthdayReminder/releases/update.json"
 
 
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        lifecycleScope.launch {
-            UpdateManager.checkForUpdate(
-                context = requireContext(),
-                updateUrl = "https://hamzaazman.github.io/BirthdayReminder/releases/update.json"
-            ) { updateInfo ->
-                UpdateDialogFragment(updateInfo).show(
-                    parentFragmentManager,
-                    "update_dialog"
-                )
-            }
-
-        }
 
         with(binding) {
             todayRecyclerView.adapter = todayAdapter
@@ -78,7 +63,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         collectState()
     }
-
 
 
     @RequiresApi(Build.VERSION_CODES.O)

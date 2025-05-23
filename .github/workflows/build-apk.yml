@@ -56,6 +56,13 @@ jobs:
         echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
         cp app/build/outputs/apk/release/app-release.apk ./BirthdayReminder-v$VERSION_NAME.apk
 
+    - name: Generate timestamped tag name
+      id: tag
+      run: |
+        TAG_NAME=v$(date +'%Y%m%d%H%M%S')
+        echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+        echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+
     - name: Create update.json
       run: |
         VERSION_NAME=1.0.0
@@ -74,6 +81,16 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./  # Burada hem APK hem update.json var
         destination_dir: releases
+
+    - name: Create GitHub Release and upload APK
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ env.TAG_NAME }}
+        name: ${{ env.TAG_NAME }}
+        body: "Otomatik yayın"
+        files: BirthdayReminder-v1.0.0.apk
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
     env:
       KEYSTORE_FILE_PATH: ${{ secrets.KEYSTORE_FILE_PATH }}

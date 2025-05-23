@@ -40,26 +40,28 @@ jobs:
     - name: Grant execute permission to gradlew
       run: chmod +x ./gradlew
 
-    # --- Sürüm Bilgilerini Al ve Etiket Oluştur ---
     - name: Get App Version and Generate Tags
       id: version_info
       run: |
         # APP_VERSION_CODE için Unix timestamp kullanıyoruz, bu her zaman benzersiz ve artan olacaktır.
-        # APP_VERSION_NAME için Git tag'ını kullanmayı deneyelim. Eğer yoksa veya boşsa, varsayılan bir değer kullanırız.
-        
-        # En son Git tag'ını al (örn: v1.0.0). Eğer tag yoksa veya boşsa '1.0.0' gibi bir varsayılan kullan
-        APP_VERSION_NAME=$(git describe --tags --abbrev=0 --always | sed 's/^v//' || echo "1.0.0") # 'v' önekini kaldırır
-
-        # Eğer git describe komutu başarısız olursa veya boş bir string dönerse
-        if [ -z "$APP_VERSION_NAME" ] || [ "$APP_VERSION_NAME" == "v" ]; then
-          APP_VERSION_NAME="1.0.0" # Güvenli bir varsayılan değer
-        fi
-        
         APP_VERSION_CODE=$(date +%s) # Unix timestamp (saniye cinsinden) olarak benzersiz versionCode
 
-        # RELEASE_TAG, APK dosya adı ve changelog için kullanılacak
-        # RELEASE_TAG'ı daha kısa tutalım ve versionCode ile bitirelim
-        RELEASE_TAG="v${APP_VERSION_NAME}-${{ env.APP_VERSION_CODE }}" 
+        # APP_VERSION_NAME için Git tag'ını kullanmayı deneyelim.
+        # Eğer tag yoksa veya 'v' önekiyle birlikte commit hash'i dönerse,
+        # daha okunabilir bir varsayılan değer (örn. '1.0.0') kullanalım.
+        RAW_APP_VERSION_NAME=$(git describe --tags --abbrev=0 --always)
+        APP_VERSION_NAME="${RAW_APP_VERSION_NAME#v}" # "v" önekini kaldırır
+
+        # Eğer APP_VERSION_NAME hala bir commit hash'i gibi görünüyorsa veya boşsa,
+        # fallback olarak run_number'ı kullanan bir versiyon adı oluşturalım.
+        # Commit hash'i genellikle en az 7 karakter uzunluğundadır, bu bir kontrol olabilir.
+        if [[ -z "$APP_VERSION_NAME" || ${#APP_VERSION_NAME} -gt 6 && "$APP_VERSION_NAME" =~ ^[0-9a-fA-F]+$ ]]; then
+          APP_VERSION_NAME="0.0.${{ github.run_number }}" # Örneğin: 0.0.1, 0.0.2 vb.
+        fi
+
+        # RELEASE_TAG, GitHub Release ve APK dosya adı için kullanılacak.
+        # Formatı 'v<versionName>-<timestamp>' olarak belirleyelim, bu genellikle kabul görür.
+        RELEASE_TAG="v${APP_VERSION_NAME}-${APP_VERSION_CODE}" 
         NEW_APK_NAME="BirthdayReminder-${{ env.RELEASE_TAG }}.apk"
 
         # Bu değerleri sonraki adımlarda kullanmak üzere ortam değişkenlerine yaz

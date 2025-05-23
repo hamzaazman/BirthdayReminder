@@ -52,16 +52,16 @@ jobs:
 
     - name: Rename and move APK to root
       run: |
-        VERSION_NAME=1.0.0
-        echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
-        cp app/build/outputs/apk/release/app-release.apk ./BirthdayReminder-v$VERSION_NAME.apk
+        cp app/build/outputs/apk/release/app-release.apk ./BirthdayReminder-${{ env.RELEASE_TAG }}.apk
 
-    - name: Generate pretty version name
+
+    - name: Generate pretty version tag
       id: version
       run: |
-        VERSION_NAME="v1.0.0-$(date +'%Y.%m.%d')"
-        echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
-        echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
+        RELEASE_TAG="v1.0.0-$(date +'%Y.%m.%d')"
+        echo "RELEASE_TAG=$RELEASE_TAG" >> $GITHUB_ENV
+        echo "release_tag=$RELEASE_TAG" >> $GITHUB_OUTPUT
+
 
     - name: Create update.json
       run: |
@@ -85,13 +85,14 @@ jobs:
     - name: Create GitHub Release and upload APK
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ env.TAG_NAME }}
-        name: ${{ env.TAG_NAME }}
+        tag_name: ${{ env.RELEASE_TAG }}
+        name: ${{ env.RELEASE_TAG }}
         body: "Otomatik yayın"
-        files: BirthdayReminder-v1.0.0.apk
+        files: BirthdayReminder-${{ env.RELEASE_TAG }}.apk
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+
+        
     env:
       KEYSTORE_FILE_PATH: ${{ secrets.KEYSTORE_FILE_PATH }}
       KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}

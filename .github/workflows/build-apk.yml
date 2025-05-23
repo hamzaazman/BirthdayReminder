@@ -43,44 +43,59 @@ jobs:
     - name: Build release APK
       run: ./gradlew assembleRelease --stacktrace
 
+    
+    - name: Get App Version from Gradle
+      id: get_version
+      run: |
+        # build.gradle'dan versionName ve versionCode'u oku (örneğin)
+        # Bu, APK'nızın gerçek versiyonuyla eşleşmesini sağlar
+        VERSION_NAME=$(grep "versionName" app/build.gradle | awk -F "'" '{print $2}')
+        VERSION_CODE=$(grep "versionCode" app/build.gradle | awk '{print $2}')
+        echo "APP_VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
+        echo "APP_VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
+        echo "RELEASE_TAG=v${VERSION_NAME}-$(date +'%Y.%m.%d-%H%M%S')" >> $GITHUB_ENV # Daha detaylı bir etiket
+        
+        # Eğer build.gradle'da versionCode dinamik ise, buraya uygun bir şekilde okuyun.
+        # Örneğin: versionCode 1
+        # VEYA, her build'de benzersiz bir versionCode oluşturmak için:
+        # echo "APP_VERSION_CODE=$(date +%s)" >> $GITHUB_ENV # Unix timestamp olarak
+
     - name: Find APK path dynamically
       id: find_apk
       run: |
-        APK_PATH=$(find app/build/outputs -name "*.apk" | head -n 1)
-        echo "APK_PATH=$APK_PATH" >> $GITHUB_ENV
-        echo "apk=$APK_PATH" >> $GITHUB_OUTPUT
+        # Bu adımı APK'yı dinamik bulmak için kullanmaya devam edebiliriz.
+        # Ancak, daha sonra daha iyi bir isimlendirme ve taşıma yapacağız.
+        # find app/build/outputs -name "*.apk" | head -n 1
+        # Yukarıdaki satırı silebiliriz, çünkü bir sonraki adımda doğrudan doğru APK'yı alacağız.
 
-    - name: Rename and move APK to root
+    - name: Rename and move APK for consistent naming
       run: |
-        cp app/build/outputs/apk/release/app-release.apk ./BirthdayReminder-${{ env.RELEASE_TAG }}.apk
-
-
-    - name: Generate pretty version tag
-      id: version
-      run: |
-        RELEASE_TAG="v1.0.0-$(date +'%Y.%m.%d')"
-        echo "RELEASE_TAG=$RELEASE_TAG" >> $GITHUB_ENV
-        echo "release_tag=$RELEASE_TAG" >> $GITHUB_OUTPUT
-
+        # app-release.apk'yi gerçek versiyon ve etiketle yeniden adlandır
+        # 'app/build/outputs/apk/release' yolu Gradle sürümüne veya varyantına göre değişebilir
+        APK_INPUT_PATH=$(find app/build/outputs -name "app-release.apk" -print -quit)
+        if [ -z "$APK_INPUT_PATH" ]; then
+          echo "Error: app-release.apk not found!"
+          exit 1
+        fi
+        NEW_APK_NAME="BirthdayReminder-${{ env.RELEASE_TAG }}.apk"
+        cp "$APK_INPUT_PATH" "./$NEW_APK_NAME"
+        echo "NEW_APK_NAME=$NEW_APK_NAME" >> $GITHUB_ENV # update.json için kullanmak üzere ayarla
 
     - name: Create update.json
       run: |
-        VERSION_NAME=1.0.0
-        VERSION_CODE=$(date +%s) # otomatik versiyon kodu
-        echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
         echo '{
-          "versionCode": '"$VERSION_CODE"',
-          "versionName": "'"$VERSION_NAME"'",
-          "apkUrl": "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/BirthdayReminder-v'"$VERSION_NAME"'.apk",
-          "changelog": "Otomatik yayın"
+          "versionCode": '"${{ env.APP_VERSION_CODE }}"',
+          "versionName": "'"${{ env.APP_VERSION_NAME }}"'",
+          "apkUrl": "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/releases/${{ env.NEW_APK_NAME }}",
+          "changelog": "Otomatik yayın - ${{ env.RELEASE_TAG }}"
         }' > update.json
 
     - name: Upload update.json and APK to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./  # Burada hem APK hem update.json var
-        destination_dir: releases
+        publish_dir: ./ 
+        destination_dir: releases 
 
     - name: Create GitHub Release and upload APK
       uses: softprops/action-gh-release@v1
@@ -88,11 +103,10 @@ jobs:
         tag_name: ${{ env.RELEASE_TAG }}
         name: ${{ env.RELEASE_TAG }}
         body: "Otomatik yayın"
-        files: BirthdayReminder-${{ env.RELEASE_TAG }}.apk
+        files: ${{ env.NEW_APK_NAME }} 
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-        
     env:
       KEYSTORE_FILE_PATH: ${{ secrets.KEYSTORE_FILE_PATH }}
       KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}

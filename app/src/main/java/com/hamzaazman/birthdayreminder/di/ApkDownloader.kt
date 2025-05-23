@@ -1,6 +1,7 @@
-package com.hamzaazman.birthdayreminder.common
+package com.hamzaazman.birthdayreminder.di
 
 import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -10,15 +11,19 @@ import java.io.File
 import java.io.FileOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import javax.inject.Inject
+import javax.inject.Singleton
 
-
-object ApkDownloader {
+@Singleton
+class ApkDownloader @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
 
     fun downloadApk(
-        context: Context,
         url: String,
         onProgress: (Int) -> Unit,
-        onDownloaded: (File) -> Unit
+        onDownloaded: (File) -> Unit,
+        onError: (Exception) -> Unit
     ) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -53,6 +58,9 @@ object ApkDownloader {
 
             } catch (e: Exception) {
                 e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                    onError(e)
+                }
             }
         }
     }

@@ -1,0 +1,7 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/shape_circle_avatar_bg" />
+    <item android:drawable="@drawable/baseline_person_24"
+        android:gravity="center"
+        android:width="64dp"
+        android:height="64dp"
+        android:tint="?attr/colorOnSurfaceVariant" /> </layer-list>

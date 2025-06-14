@@ -3,22 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?android:colorBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Toolbar -->
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:navigationIcon="?attr/homeAsUpIndicator"
-            app:title="Kişi Ekle" />
+            android:background="?attr/colorSurface"
+            app:navigationIcon="?homeAsUpIndicator"
+            app:navigationIconTint="?attr/colorOnSurface"
+            app:title="Kişi Ekle"
+            app:titleTextColor="?attr/colorOnSurface" />
 
-        <!-- Content -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,7 +28,6 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <!-- Profile Image Placeholder -->
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/profileImageView"
                 android:layout_width="120dp"
@@ -39,12 +40,12 @@
                 android:padding="4dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/avatar"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
                 app:strokeColor="?attr/colorOutline"
-                app:strokeWidth="2dp"
-                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />
+                app:strokeWidth="2dp" />
 
-            <!-- Name input -->
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.Material3.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -54,16 +55,19 @@
                     android:id="@+id/nameInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textCapWords" />
+                    android:inputType="textCapWords"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?attr/colorOnSurfaceVariant" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Birth Date input -->
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.Material3.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:hint="Doğum Tarihi"
-                app:startIconDrawable="@drawable/calendar_24">
+                app:startIconDrawable="@drawable/calendar_24"
+                app:startIconTint="?attr/colorOnSurfaceVariant">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/birthDateInput"
@@ -74,23 +78,26 @@
                     tools:text="07.05.1998" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Phone Number input -->
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.Material3.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:hint="Telefon Numarası"
-                app:startIconDrawable="@drawable/phone_24">
+                app:startIconDrawable="@drawable/phone_24"
+                app:startIconTint="?attr/colorOnSurfaceVariant">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/phoneInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="phone" />
+                    android:inputType="phone"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?attr/colorOnSurfaceVariant" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Note input -->
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.Material3.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
@@ -102,15 +109,19 @@
                     android:layout_height="wrap_content"
                     android:inputType="textMultiLine"
                     android:maxLines="4"
-                    android:minLines="2" />
+                    android:minLines="2"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?attr/colorOnSurfaceVariant" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Save button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/saveButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Kaydet" />
+                android:paddingVertical="12dp"
+                android:text="Kaydet"
+                android:textSize="18sp"
+                app:cornerRadius="8dp" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

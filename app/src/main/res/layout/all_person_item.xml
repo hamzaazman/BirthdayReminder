@@ -1,26 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Widget.Material3.CardView.Elevated"
     android:layout_width="match_parent"
-    android:theme="@style/Widget.Material3.CardView.Outlined"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="4dp"
-    android:layout_marginVertical="6dp">
+    android:layout_marginVertical="6dp"
+    app:cardBackgroundColor="?attr/colorSurface"
+    app:cardElevation="2dp"
+    app:rippleColor="?attr/colorPrimaryContainer"
+    app:strokeWidth="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="14dp">
+        android:padding="16dp">
 
         <ImageView
             android:id="@+id/imageProfile"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginEnd="10dp"
-            android:src="@android:drawable/ic_menu_my_calendar" />
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="Profil İkonu"
+            android:src="@drawable/person_24"
+            app:tint="?attr/colorOnSurfaceVariant" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -33,14 +38,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                android:textColor="?attr/colorOnSurface"
                 tools:text="Ayşe Yılmaz" />
 
             <TextView
                 android:id="@+id/textBirthDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
-
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 tools:text="02.05.1995" />
         </LinearLayout>
 
@@ -48,8 +54,9 @@
             android:id="@+id/textDayLeft"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="12g"
-            android:textColor="#888888"
-            android:textSize="13sp" />
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            tools:text="12 gün" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

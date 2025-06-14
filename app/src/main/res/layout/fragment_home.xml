@@ -5,26 +5,28 @@
     android:id="@+id/homeRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?android:colorBackground"
     tools:context=".ui.home.HomeFragment">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/materialToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?attr/colorSurface"
         android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="Doğum Günleri" />
+        app:title="Doğum Günleri"
+        app:titleTextColor="?attr/colorOnSurface" />
 
-
-    <!-- Empty State Section -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/emptySection"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/materialToolbar">
 
         <ImageView
             android:id="@+id/emptyIcon"
@@ -37,7 +39,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.40" />
+            app:layout_constraintVertical_bias="0.40"
+            app:tint="?attr/colorOnBackground" />
 
         <TextView
             android:id="@+id/emptyText"
@@ -47,6 +50,7 @@
             android:alpha="0.5"
             android:text="Henüz kimse eklenmedi"
             android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+            android:textColor="?attr/colorOnBackground"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/emptyIcon"
             app:layout_constraintStart_toStartOf="@+id/emptyIcon"
@@ -54,23 +58,22 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <!-- Today Section -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/todaySection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:padding="12dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/materialToolbar">
-
 
         <TextView
             android:id="@+id/todayBirthdayTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Bugün Doğum Günü Olanlar 🎉"
+            android:textColor="?attr/colorOnBackground"
             android:textSize="18sp"
             android:textStyle="bold"
             android:visibility="visible"
@@ -92,23 +95,23 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <!-- All Section -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/allSection"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:layout_height="0dp"
         android:padding="12dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/todaySection">
-
 
         <TextView
             android:id="@+id/allTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Tüm Kişiler"
+            android:textColor="?attr/colorOnBackground"
             android:textSize="18sp"
             android:textStyle="bold"
             android:visibility="visible"
@@ -119,7 +122,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/allRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="8dp"
             android:visibility="visible"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -133,14 +136,15 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="12dp"
+        android:layout_margin="16dp"
+        android:backgroundTint="?attr/colorPrimaryContainer"
         android:clickable="true"
         android:contentDescription="Add Person"
         android:focusable="true"
-        app:elevation="0dp"
+        app:elevation="6dp"
+        app:srcCompat="@android:drawable/ic_menu_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_add" />
-
-
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+        app:tint="?attr/colorOnPrimaryContainer" />
 </androidx.constraintlayout.widget.ConstraintLayout>

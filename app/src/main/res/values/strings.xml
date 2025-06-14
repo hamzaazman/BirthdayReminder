@@ -2,4 +2,18 @@
     <string name="app_name">BirthdayReminder</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home_title">Doğum Günleri</string>
+    <string name="empty_icon_desc">Boş Durum İkonu</string>
+    <string name="empty_state_message">Henüz kimse eklenmedi</string>
+    <string name="today_birthdays_title">Bugün Doğum Günü Olanlar 🎉</string>
+    <string name="all_people_title">Tüm Kişiler</string>
+    <string name="add_person">Kişi Ekle</string>
+    <string name="edit_person_title">Kişiyi Düzenle</string>
+    <string name="profile_image_desc">Profil resmi seç</string>
+    <string name="name_hint">İsim</string>
+    <string name="birth_date_hint">Doğum Tarihi</string>
+    <string name="phone_hint">Telefon Numarası</string>
+    <string name="note_hint">Not</string>
+    <string name="save_button">Kaydet</string>
+    <string name="add_person_title">Kişi Ekle</string>
 </resources>

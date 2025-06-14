@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:colorBackground">
+    android:background="?android:colorBackground"
+    android:fillViewport="true"
+    tools:context=".ui.add.AddFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,9 +18,9 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorSurface"
-            app:navigationIcon="?homeAsUpIndicator"
+            app:navigationIcon="?attr/homeAsUpIndicator"
             app:navigationIconTint="?attr/colorOnSurface"
-            app:title="Kişi Ekle"
+            app:title="@string/add_person_title"
             app:titleTextColor="?attr/colorOnSurface" />
 
         <LinearLayout
@@ -33,13 +35,13 @@
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:layout_marginBottom="24dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
-                android:contentDescription="Profil Fotoğrafı"
                 android:focusable="true"
                 android:padding="4dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/avatar"
+                android:contentDescription="@string/profile_image_desc"
+                app:backgroundTint="?attr/colorSurfaceVariant"
                 app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
                 app:strokeColor="?attr/colorOutline"
                 app:strokeWidth="2dp" />
@@ -49,7 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:hint="İsim">
+                android:hint="@string/name_hint">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/nameInput"
@@ -65,7 +67,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:hint="Doğum Tarihi"
+                android:hint="@string/birth_date_hint"
                 app:startIconDrawable="@drawable/calendar_24"
                 app:startIconTint="?attr/colorOnSurfaceVariant">
 
@@ -75,6 +77,8 @@
                     android:layout_height="wrap_content"
                     android:focusable="false"
                     android:inputType="none"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?attr/colorOnSurfaceVariant"
                     tools:text="07.05.1998" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -83,7 +87,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:hint="Telefon Numarası"
+                android:hint="@string/phone_hint"
                 app:startIconDrawable="@drawable/phone_24"
                 app:startIconTint="?attr/colorOnSurfaceVariant">
 
@@ -101,7 +105,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
-                android:hint="Not">
+                android:hint="@string/note_hint">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/noteInput"
@@ -118,10 +122,13 @@
                 android:id="@+id/saveButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingVertical="12dp"
-                android:text="Kaydet"
-                android:textSize="18sp"
-                app:cornerRadius="8dp" />
+                android:text="@string/save_button"
+                android:textSize="16sp"
+                app:cornerRadius="16dp"
+                app:backgroundTint="?attr/colorPrimary"
+                app:iconTint="?attr/colorOnPrimary"
+                app:rippleColor="?attr/colorPrimaryContainer"
+                android:textColor="?attr/colorOnPrimary" />
         </LinearLayout>
     </LinearLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>
